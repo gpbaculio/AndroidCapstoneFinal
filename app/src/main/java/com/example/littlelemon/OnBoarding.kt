@@ -134,8 +134,8 @@ fun isValidEmail(email: String): Boolean {
 }
 
 fun validFirstAndLastName(value: String): Boolean {
-    val regex = Regex("^[A-Z][a-z]*$")
-    return value.matches(regex)
+    val regex = Regex("^[A-Z][a-z]*(?: [A-Z][a-z]*)*\$")
+    return value.matches(regex) && value.length >= 2;
 }
 
 @Composable

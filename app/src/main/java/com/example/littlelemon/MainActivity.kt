@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -87,12 +89,10 @@ fun BottomNavigation(navController: NavController) {
             BottomNavigationItem(
                 label = { Text(text = destination.title) },
                 icon = {
-                    Box(
-                        modifier = Modifier
-                            .background(color = androidx.compose.ui.graphics.Color.Red) // Set the desired background color
-                    ) {
-                        destination.icon // Add the Home icon
-                    }
+                    Icon(
+                        destination.icon,
+                        contentDescription = destination.title
+                    )
                 },
                 selected = index == selectedIndex.value,
                 onClick = {
