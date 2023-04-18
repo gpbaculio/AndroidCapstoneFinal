@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 
 object SharedPreferencesManager {
-    private const val PRF_KEY_FIRSTNAME = "firstname"
-    private const val PRF_KEY_LASTNAME = "lastname"
-    private const val PRF_KEY_EMAIL = "email"
+    var PRF_KEY_FIRSTNAME = "firstname"
+    var PRF_KEY_LASTNAME = "lastname"
+    var PRF_KEY_EMAIL = "email"
     private const val PREFERENCES_NAME = "AppPreferences"
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -35,8 +35,8 @@ object SharedPreferencesManager {
     }
 
     // Function to retrieve a string value from SharedPreferences
-    fun getString(key: String, defaultValue: String): String? {
-        return sharedPreferences.getString(key, defaultValue)
+    fun getString(key: String, defaultValue: String): String  {
+        return sharedPreferences.getString(key, null) ?: defaultValue
     }
 
     // Function to remove a key-value pair from SharedPreferences

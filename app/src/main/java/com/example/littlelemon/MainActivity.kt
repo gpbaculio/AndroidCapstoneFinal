@@ -15,6 +15,7 @@ import com.example.littlelemon.ui.theme.LittleLemonTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SharedPreferencesManager.init(this)
         setContent {
             LittleLemonTheme {
                 // A surface container using the 'background' color from the theme
@@ -22,7 +23,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    OnBoarding()
+                    val firstName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, "")
+                    val lastName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_LASTNAME, "")
+                    val email = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_EMAIL, "")
+
+                    if(firstName.isEmpty() && lastName.isEmpty() && email.isEmpty()) {
+                        OnBoarding()
+                    } else {
+                        Greeting("Phil")
+                    }
                 }
             }
         }
