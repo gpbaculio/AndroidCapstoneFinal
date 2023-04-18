@@ -93,7 +93,7 @@ fun OnBoarding() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 24.dp, start = 24.dp,end=24.dp),
+                    .padding(bottom = 24.dp, start = 24.dp, end = 24.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -146,8 +146,8 @@ fun FormField(
 ) {
     Column(
         modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 24.dp, end=24.dp, bottom = 12.dp, top = 12.dp)
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, bottom = 12.dp, top = 12.dp)
     ) {
         Text(
             text = label,
@@ -168,7 +168,12 @@ fun FormField(
         )
 
         if (isError) {
-            val errorMessage = if (label == "Email") "Please enter valid Email Address" else "Please enter a valid $label. Must begin with Capital."
+            val errorMessage = if (label == "Email") {
+                "Please enter valid Email Address"
+            } else {
+                "Please enter a valid $label. Must begin with Capital."
+            }
+            
             Text(
                 text = errorMessage,
                 color = Color.Red,
