@@ -166,9 +166,11 @@ fun FormField(
             modifier = Modifier.fillMaxWidth(),
             isError = isError
         )
+
         if (isError) {
+            val errorMessage = if (label == "Email") "Please enter valid Email Address" else "Please enter a valid $label. Must begin with Capital."
             Text(
-                text = "Please enter a valid $label",
+                text = errorMessage,
                 color = Color.Red,
             )
         }
