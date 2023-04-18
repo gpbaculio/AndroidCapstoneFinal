@@ -1,8 +1,10 @@
 package com.example.littlelemon
 
+import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -38,10 +40,11 @@ fun App() {
             color = MaterialTheme.colors.background
         ) {
 
+            val firstName=SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, SharedPreferencesManager.firstName)
+            val lastName=SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_LASTNAME, SharedPreferencesManager.lastName)
+            val email=SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_EMAIL, SharedPreferencesManager.email)
 
-            if(SharedPreferencesManager.firstName.isEmpty()
-                && SharedPreferencesManager.lastName.isEmpty()
-                    && SharedPreferencesManager.email.isEmpty()) {
+            if(firstName.isEmpty() && lastName.isEmpty() && email.isEmpty()) {
                 OnBoarding()
             } else {
                 LoggedInUser()
@@ -83,7 +86,14 @@ fun BottomNavigation(navController: NavController) {
         destinationList.forEachIndexed { index, destination ->
             BottomNavigationItem(
                 label = { Text(text = destination.title) },
-                icon = {  destination.icon  },
+                icon = {
+                    Box(
+                        modifier = Modifier
+                            .background(color = androidx.compose.ui.graphics.Color.Red) // Set the desired background color
+                    ) {
+                        destination.icon // Add the Home icon
+                    }
+                },
                 selected = index == selectedIndex.value,
                 onClick = {
                     selectedIndex.value = index

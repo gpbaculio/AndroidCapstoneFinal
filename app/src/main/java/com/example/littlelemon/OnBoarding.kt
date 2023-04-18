@@ -99,8 +99,12 @@ fun OnBoarding() {
             ) {
                 Button(
                     onClick = {
-                        isFirstNameError = !validateStringWithCapitalAtFirstAndAfterSpace(firstName)
-                        isLastNameError = !validateStringWithCapitalAtFirstAndAfterSpace(lastName)
+                        firstName = firstName.trim()
+                        lastName = lastName.trim()
+                        email = email.trim()
+
+                        isFirstNameError = !validFirstAndLastName(firstName)
+                        isLastNameError = !validFirstAndLastName(lastName)
                         isEmailError = !isValidEmail(email)
 
                         if(!isFirstNameError && !isLastNameError && !isEmailError) {
@@ -129,12 +133,9 @@ fun isValidEmail(email: String): Boolean {
     return email.matches(emailPattern)
 }
 
-fun validateStringWithCapitalAtFirstAndAfterSpace(inputString: String): Boolean {
-    // Accepts a capital letter at the first index of the string, after every space,
-    // and ensures every space is followed or preceded by at least 2 characters
-    val regex = Regex("(?i)^(?:[A-Z][a-z]*\\w{1}\\s+)*[A-Z][a-z]*\\w{1}$")
-
-    return inputString.matches(regex) && inputString.isNotEmpty()
+fun validFirstAndLastName(value: String): Boolean {
+    val regex = Regex("^[A-Z][a-z]*$")
+    return value.matches(regex)
 }
 
 @Composable
@@ -164,16 +165,16 @@ fun FormField(
                 onChange(it)
             },
             modifier = Modifier.fillMaxWidth(),
-            isError = isError
+            isError = isError,
         )
 
         if (isError) {
             val errorMessage = if (label == "Email") {
-                "Please enter valid Email Address"
+                "Please enter a valid Email Address"
             } else {
                 "Please enter a valid $label. Must begin with Capital."
             }
-            
+
             Text(
                 text = errorMessage,
                 color = Color.Red,
