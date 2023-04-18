@@ -1,15 +1,22 @@
 package com.example.littlelemon
 
+import android.app.Person
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.littlelemon.ui.theme.LittleLemonTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,36 +24,79 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         SharedPreferencesManager.init(this)
         setContent {
-            LittleLemonTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    val firstName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, "")
-                    val lastName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_LASTNAME, "")
-                    val email = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_EMAIL, "")
+            App()
+        }
+    }
+}
 
-                    if(firstName.isEmpty() && lastName.isEmpty() && email.isEmpty()) {
-                        OnBoarding()
-                    } else {
-                        Greeting("Phil")
-                    }
-                }
+@Composable
+fun App() {
+    LittleLemonTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+            val firstName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, "")
+            val lastName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_LASTNAME, "")
+            val email = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_EMAIL, "")
+
+            if(firstName.isEmpty() && lastName.isEmpty() && email.isEmpty()) {
+                OnBoarding()
+            } else {
+                LoggedInUser()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun LoggedInUser() {
+    val navController = rememberNavController()
+    Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
+        Box(Modifier.padding(it)) {
+            NavHost(navController = navController, startDestination = Home.route) {
+                composable(Home.route) {
+                    HomeScreen()
+                }
+                composable(Profile.route) {
+                    ProfileScreen()
+                }
+
+            }
+        }
+    }
 }
 
+
+
+@Composable
+fun BottomNavigation(navController: NavController) {
+    val destinationList = listOf(
+        Home,
+        Profile
+    )
+    val selectedIndex = rememberSaveable {
+        mutableStateOf(1)
+    }
+    BottomNavigation {
+        destinationList.forEachIndexed { index, destination ->
+            BottomNavigationItem(
+                label = { Text(text = destination.title) },
+                icon = {  destination.icon  },
+                selected = index == selectedIndex.value,
+                onClick = {
+                    selectedIndex.value = index
+                    navController.navigate(destinationList[index].route) {
+                        popUpTo(Home.route)
+                        launchSingleTop = true
+                    }
+                })
+        }
+    }
+}
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    LittleLemonTheme {
-        Greeting("Android")
-    }
+    App()
 }
