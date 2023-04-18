@@ -9,6 +9,7 @@ object SharedPreferencesManager {
     var PRF_KEY_FIRSTNAME = "firstname"
     var PRF_KEY_LASTNAME = "lastname"
     var PRF_KEY_EMAIL = "email"
+    var PRF_KEY_IMAGE = "image"
     private const val PREFERENCES_NAME = "AppPreferences"
     private lateinit var sharedPreferences: SharedPreferences
     private val _firstName = mutableStateOf("")
@@ -20,6 +21,9 @@ object SharedPreferencesManager {
     private val _email = mutableStateOf("")
     val email: String
         get() = _email.value
+    private val _image = mutableStateOf("")
+    val image: String
+        get() = _image.value
 
     // Initialize SharedPreferences with the application context
     fun init(context: Context) {
@@ -38,6 +42,9 @@ object SharedPreferencesManager {
         }
         if(key === PRF_KEY_EMAIL) {
             _email.value = value
+        }
+        if(key === PRF_KEY_IMAGE) {
+            _image.value = value
         }
         editor.apply()
     }
