@@ -31,7 +31,9 @@ fun OnBoarding() {
         var firstName by remember { mutableStateOf("") }
         var lastName by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
-        var isError by remember { mutableStateOf(false) }
+        var isEmailError by remember { mutableStateOf(false) }
+        var isFirstNameError by remember { mutableStateOf(false) }
+        var isLastNameError by remember { mutableStateOf(false) }
 
 
         Column(
@@ -55,7 +57,7 @@ fun OnBoarding() {
                     .background(color = Color.Green)
                     .padding(36.dp),
                 fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
             Text(
                 text = "Personal Information",
@@ -84,15 +86,26 @@ fun OnBoarding() {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end=24.dp, top = 4.dp, bottom = 12.dp),
+                    .padding(start = 24.dp, end=24.dp, top = 4.dp),
+                isError = isFirstNameError
             )
+            if (isFirstNameError) {
+                Text(
+                    text = "Please enter a valid First Name",
+                    color = Color.Red,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp),
+                )
+            }
             Text(
                 text = "Last name",
                 textAlign = TextAlign.Left,
                 color = Color.Black,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp),
+                    .padding(start = 24.dp, top = 12.dp),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal
             )
@@ -103,16 +116,23 @@ fun OnBoarding() {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end=24.dp, top = 4.dp, bottom = 12.dp),
+                    .padding(start = 24.dp, end=24.dp),
+                isError = isLastNameError
             )
-
+            if (isLastNameError) {
+                Text(
+                    text = "Please enter a valid First Name",
+                    color = Color.Red,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp),
+                )
+            }
             EmailTextField(
                 email = email,
-                onEmailChanged = {
-                    email = it
-                    isError = !isValidEmail(email)
-                },
-                isError = isError
+                onEmailChanged = { email = it },
+                isError = isEmailError
             )
             Column(
                 modifier = Modifier
@@ -123,7 +143,9 @@ fun OnBoarding() {
             ) {
                 Button(
                     onClick = {
-
+                        isFirstNameError = !validateStringWithCapitalAtFirstAndAfterSpace(firstName)
+                        isLastNameError = !validateStringWithCapitalAtFirstAndAfterSpace(lastName)
+                        isEmailError = !isValidEmail(email)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -142,6 +164,14 @@ fun isValidEmail(email: String): Boolean {
     return email.matches(emailPattern)
 }
 
+fun validateStringWithCapitalAtFirstAndAfterSpace(inputString: String): Boolean {
+    // Accepts a capital letter at the first index of the string, after every space,
+    // and ensures every space is followed or preceded by at least 2 characters
+    val regex = Regex("(?i)^(?:[A-Z][a-z]*\\w{1}\\s+)*[A-Z][a-z]*\\w{1}$")
+
+    return inputString.matches(regex) && inputString.isNotEmpty()
+}
+
 @Composable
 fun EmailTextField(
     email: String,
@@ -150,7 +180,7 @@ fun EmailTextField(
 ) {
     Column( modifier = Modifier
         .fillMaxWidth()
-        .padding(start = 24.dp, end=24.dp, bottom = 12.dp)) {
+        .padding(start = 24.dp, end=24.dp, bottom = 12.dp, top = 12.dp)) {
         Text(
             text = "Email",
             textAlign = TextAlign.Left,
@@ -162,16 +192,11 @@ fun EmailTextField(
         )
         TextField(
             value = email,
-            onValueChange = { onEmailChanged(it) }, 
-            isError = isError,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            visualTransformation = VisualTransformation.None,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 4.dp),
+            onValueChange = {
+                onEmailChanged(it)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            isError = isError
         )
         if (isError) {
             Text(
