@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -23,6 +24,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun OnBoarding() {
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -99,6 +102,15 @@ fun OnBoarding() {
                         isFirstNameError = !validateStringWithCapitalAtFirstAndAfterSpace(firstName)
                         isLastNameError = !validateStringWithCapitalAtFirstAndAfterSpace(lastName)
                         isEmailError = !isValidEmail(email)
+
+                        if(!isFirstNameError && !isLastNameError && !isEmailError) {
+                            SharedPreferencesManager.saveString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, firstName)
+                            SharedPreferencesManager.saveString(SharedPreferencesManager.PRF_KEY_LASTNAME, lastName)
+                            SharedPreferencesManager.saveString(SharedPreferencesManager.PRF_KEY_EMAIL, email)
+                            showToast(context, "Registration successful!")
+                        } else {
+                            showToast(context, "Registration unsuccessful. Please enter all data.")
+                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {

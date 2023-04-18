@@ -2,6 +2,8 @@ package com.example.littlelemon
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 
 object SharedPreferencesManager {
     var PRF_KEY_FIRSTNAME = "firstname"
@@ -9,28 +11,34 @@ object SharedPreferencesManager {
     var PRF_KEY_EMAIL = "email"
     private const val PREFERENCES_NAME = "AppPreferences"
     private lateinit var sharedPreferences: SharedPreferences
+    private val _firstName = mutableStateOf("")
+    val firstName: String
+        get() = _firstName.value
+    private val _lastName = mutableStateOf("")
+    val lastName: String
+        get() = _lastName.value
+    private val _email = mutableStateOf("")
+    val email: String
+        get() = _email.value
 
     // Initialize SharedPreferences with the application context
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     }
 
-    // Function to store a boolean value in SharedPreferences
-    fun saveBoolean(key: String, value: Boolean) {
-        val editor = sharedPreferences.edit()
-        editor.putBoolean(key, value)
-        editor.apply()
-    }
-
-    // Function to retrieve a boolean value from SharedPreferences
-    fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        return sharedPreferences.getBoolean(key, defaultValue)
-    }
-
     // Function to store a string value in SharedPreferences
     fun saveString(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
+        if(key === PRF_KEY_FIRSTNAME) {
+            _firstName.value = value
+        }
+        if(key === PRF_KEY_LASTNAME) {
+            _lastName.value = value
+        }
+        if(key === PRF_KEY_EMAIL) {
+            _email.value = value
+        }
         editor.apply()
     }
 
@@ -53,4 +61,8 @@ object SharedPreferencesManager {
         editor.apply()
     }
 
+}
+
+fun showToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

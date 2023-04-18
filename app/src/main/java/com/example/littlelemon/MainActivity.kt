@@ -1,6 +1,5 @@
 package com.example.littlelemon
 
-import android.app.Person
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,8 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,8 +18,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.littlelemon.ui.theme.LittleLemonTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         SharedPreferencesManager.init(this)
         setContent {
             App()
@@ -37,11 +37,11 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            val firstName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, "")
-            val lastName = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_LASTNAME, "")
-            val email = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_EMAIL, "")
 
-            if(firstName.isEmpty() && lastName.isEmpty() && email.isEmpty()) {
+
+            if(SharedPreferencesManager.firstName.isEmpty()
+                && SharedPreferencesManager.lastName.isEmpty()
+                    && SharedPreferencesManager.email.isEmpty()) {
                 OnBoarding()
             } else {
                 LoggedInUser()
