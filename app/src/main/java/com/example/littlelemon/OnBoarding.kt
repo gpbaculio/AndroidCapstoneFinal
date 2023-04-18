@@ -69,69 +69,22 @@ fun OnBoarding() {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
-            Text(
-                text = "First name",
-                textAlign = TextAlign.Left,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
-            )
-            TextField(
+            FormField(
+                label = "First name",
                 value = firstName,
-                onValueChange = {
-                    firstName = it
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end=24.dp, top = 4.dp),
+                onChange = { firstName = it  },
                 isError = isFirstNameError
             )
-            if (isFirstNameError) {
-                Text(
-                    text = "Please enter a valid First Name",
-                    color = Color.Red,
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp),
-                )
-            }
-            Text(
-                text = "Last name",
-                textAlign = TextAlign.Left,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, top = 12.dp),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
-            )
-            TextField(
+            FormField(
+                label = "Last name",
                 value = lastName,
-                onValueChange = {
-                    lastName = it
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end=24.dp),
+                onChange = { lastName = it  },
                 isError = isLastNameError
             )
-            if (isLastNameError) {
-                Text(
-                    text = "Please enter a valid First Name",
-                    color = Color.Red,
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp),
-                )
-            }
-            EmailTextField(
-                email = email,
-                onEmailChanged = { email = it },
+            FormField(
+                label = "Email",
+                value = email,
+                onChange = { email = it  },
                 isError = isEmailError
             )
             Column(
@@ -173,16 +126,19 @@ fun validateStringWithCapitalAtFirstAndAfterSpace(inputString: String): Boolean 
 }
 
 @Composable
-fun EmailTextField(
-    email: String,
-    onEmailChanged: (String) -> Unit,
+fun FormField(
+    label: String,
+    value: String,
+    onChange: (String) -> Unit,
     isError: Boolean
 ) {
-    Column( modifier = Modifier
+    Column(
+        modifier = Modifier
         .fillMaxWidth()
-        .padding(start = 24.dp, end=24.dp, bottom = 12.dp, top = 12.dp)) {
+        .padding(start = 24.dp, end=24.dp, bottom = 12.dp, top = 12.dp)
+    ) {
         Text(
-            text = "Email",
+            text = label,
             textAlign = TextAlign.Left,
             color = Color.Black,
             modifier = Modifier
@@ -191,22 +147,20 @@ fun EmailTextField(
             fontWeight = FontWeight.Normal
         )
         TextField(
-            value = email,
+            value = value,
             onValueChange = {
-                onEmailChanged(it)
+                onChange(it)
             },
             modifier = Modifier.fillMaxWidth(),
             isError = isError
         )
         if (isError) {
             Text(
-                text = "Please enter a valid email address",
+                text = "Please enter a valid $label",
                 color = Color.Red,
             )
         }
     }
-
-
 }
 
 
