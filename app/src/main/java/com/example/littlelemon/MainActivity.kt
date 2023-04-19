@@ -1,20 +1,16 @@
 package com.example.littlelemon
 
 import android.os.Build
-import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -24,7 +20,7 @@ import com.example.littlelemon.ui.theme.LittleLemonTheme
 import android.view.Window
 import android.view.WindowManager
 import android.graphics.Color.parseColor
-import android.graphics.Color.parseColor
+
 class MainActivity : ComponentActivity() {
     private fun setStatusBarColor(color: Int) {
         // Get the window object
@@ -71,11 +67,15 @@ fun App() {
 @Composable
 fun LoggedInUser() {
     val navController = rememberNavController()
-    Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
+    val selectedIndex = rememberSaveable {
+        mutableStateOf(0)
+    }
+    Scaffold(bottomBar = { BottomNavigation(navController = navController,selectedIndex) }) {
         Box(Modifier.padding(it)) {
             NavHost(navController = navController, startDestination = Home.route) {
                 composable(Home.route) {
-                    HomeScreen()
+                    HomeScreen(onProfileClick = {  selectedIndex.value = 1
+                        navController.navigate("Profile")})
                 }
                 composable(Profile.route) {
                     ProfileScreen()
@@ -88,14 +88,12 @@ fun LoggedInUser() {
 
 
 @Composable
-fun BottomNavigation(navController: NavController) {
+fun BottomNavigation(navController: NavController, selectedIndex: MutableState<Int>) {
     val destinationList = listOf(
         Home,
         Profile
     )
-    val selectedIndex = rememberSaveable {
-        mutableStateOf(0)
-    }
+
     BottomNavigation {
         destinationList.forEachIndexed { index, destination ->
             BottomNavigationItem(

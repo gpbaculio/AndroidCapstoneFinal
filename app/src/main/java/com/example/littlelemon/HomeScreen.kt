@@ -4,8 +4,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextFieldColors
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.expandVertically
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -30,6 +29,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
 import androidx.room.Room
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -48,7 +48,7 @@ import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onProfileClick: () -> Unit) {
     val httpClient = HttpClient(Android) {
         install(ContentNegotiation) {
             json(contentType = ContentType("text", "plain"))
@@ -102,16 +102,27 @@ fun HomeScreen() {
                         .fillMaxWidth(.40f)
                         .padding(16.dp),
                 )
-                Box(modifier = Modifier.fillMaxWidth().padding(end=16.dp), contentAlignment = Alignment.CenterEnd) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 16.dp), contentAlignment = Alignment.CenterEnd) {
+
                     GlideImage(
                         model = image,
                         contentDescription = null,
                         modifier = Modifier
                             .size(50.dp)
                             .clip(CircleShape)
-                            .absoluteOffset(x = 0.dp, y = 0.dp),
+                            .absoluteOffset(x = 0.dp, y = 0.dp)
+                            .border(
+                                BorderStroke(1.5.dp, Color.Gray),
+                                shape = CircleShape
+                            ).clickable {
+                                onProfileClick()
+                            },
                         contentScale = ContentScale.Crop,
-                    )
+                    ) {
+                        it.error(R.drawable.image).centerInside().centerCrop().fitCenter()
+                    }
                 }
 
             }
