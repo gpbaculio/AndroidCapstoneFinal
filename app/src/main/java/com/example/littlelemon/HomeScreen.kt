@@ -53,6 +53,8 @@ fun HomeScreen() {
     val menuCategories = menuItems.map { it.category }.distinct()
     val dao = database.menuItemDao()
 
+    var selectedCategories by remember { mutableStateOf(emptyList<String>()) }
+
     LaunchedEffect(Unit) {
         val isDaoEmpty = withContext(Dispatchers.IO) {
             dao.isEmpty()
@@ -61,7 +63,7 @@ fun HomeScreen() {
             isLoading = true
             val menuItemsNetwork = HttpClient
                 .httpClient
-                .get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json ")
+                .get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")
                 .body<MenuNetwork>()
                 .menu
             withContext(Dispatchers.IO) {
@@ -154,6 +156,9 @@ fun HomeScreen() {
                 if (searchPhrase.isNotEmpty()) {
                     menuItems = menuItems.filter { it.title.contains(searchPhrase, ignoreCase = true) }
                 }
+                if(selectedCategories.isNotEmpty()) {
+                    menuItems = FilterHelper.filterProducts(selectedCategories, menuItems)
+                }
             }
             Text(
                 text = "ORDER FOR DELIVERY!",
@@ -166,7 +171,14 @@ fun HomeScreen() {
             )
             LazyRow {
                 items(menuCategories) { category ->
-                    MenuCategory(category)
+                    MenuCategory(category,
+                        onClick = {
+                            selectedCategories = if (selectedCategories.contains(category)) {
+                                selectedCategories - category
+                            } else {
+                                selectedCategories + category
+                            }
+                        })
                 }
             }
             Divider(
@@ -196,9 +208,9 @@ fun CircularProgressLoader() {
 }
 
 @Composable
-fun MenuCategory(category: String) {
+fun MenuCategory(category: String, onClick: () -> Unit) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
         shape = RoundedCornerShape(40),
         modifier = Modifier.padding(5.dp)
