@@ -13,9 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.bumptech.glide.request.target.Target
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.room.Room
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.DataSource
@@ -23,33 +27,50 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun HomeScreen() {
-    var data by remember { mutableStateOf(emptyList<MenuItemNetwork>()) }
-
+    val context = LocalContext.current
+    val database by lazy {
+        Room.databaseBuilder(context, AppDatabase::class.java, "database").build()
+    }
     var isLoading by remember { mutableStateOf(false) }
     val image = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_IMAGE, SharedPreferencesManager.image)
 
+
+    val databaseMenuItems by database.menuItemDao().getAll().observeAsState(emptyList())
+
+    val menuItems = databaseMenuItems
+
+
+    val dao = database.menuItemDao()
+
     LaunchedEffect(Unit) {
-        isLoading = true
-        val result = HttpClient
-           .httpClient
-           .get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json ")
-           .body<MenuNetwork>()
-           .menu
-        isLoading = false
-        data = result
+        val isDaoEmpty = withContext(Dispatchers.IO) {
+            dao.isEmpty()
+        }
+        if (isDaoEmpty) {
+            isLoading = true
+            val menuItemsNetwork = HttpClient
+                .httpClient
+                .get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json ")
+                .body<MenuNetwork>()
+                .menu
+            withContext(Dispatchers.IO) {
+                val menuItemsRoom = menuItemsNetwork.map { it.toMenuItemRoom() }
+                dao.insertAll(*menuItemsRoom.toTypedArray())
+            }
+            isLoading = false
+        }
     }
 
 
-
     Column() {
-
         if(image.isNotEmpty()) {
             DisplayImage(image)
         }
-
         if(isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -58,7 +79,7 @@ fun HomeScreen() {
             }
         } else {
             LazyColumn {
-                items(data) { Menu ->
+                items(menuItems) { Menu ->
                     MenuDish(Menu)
                 }
             }
@@ -80,7 +101,7 @@ fun CircularProgressLoader() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MenuDish(Menu: MenuItemNetwork) {
+fun MenuDish(Menu: MenuItemRoom) {
     Card {
         Row(
             modifier = Modifier
@@ -105,7 +126,6 @@ fun MenuDish(Menu: MenuItemNetwork) {
                 )
             }
             GlideLoader(Menu.image)
-
         }
     }
     Divider(
@@ -126,7 +146,6 @@ fun GlideLoader(image: String) {
         contentAlignment = Alignment.Center
     ) {
         if(isLoading) { CircularProgressLoader() }
-
         GlideImage(
             model = image,
             contentDescription = null,
@@ -163,6 +182,5 @@ fun GlideLoader(image: String) {
                 .error(R.drawable.image)
             },
         )
-
     }
 }
