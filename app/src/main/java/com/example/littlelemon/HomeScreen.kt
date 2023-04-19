@@ -1,6 +1,7 @@
 package com.example.littlelemon
 import androidx.compose.material.CircularProgressIndicator
 
+import androidx.compose.material.TextFieldColors
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.background
@@ -10,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +49,7 @@ fun HomeScreen() {
     var isLoading by remember { mutableStateOf(false) }
     val image = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_IMAGE, SharedPreferencesManager.image)
     val databaseMenuItems by database.menuItemDao().getAll().observeAsState(emptyList())
-    val menuItems = databaseMenuItems
+    var menuItems = databaseMenuItems
     val menuCategories = menuItems.map { it.category }.distinct()
     val dao = database.menuItemDao()
 
@@ -99,7 +102,7 @@ fun HomeScreen() {
                 )
                 Row(
                     modifier = Modifier
-                        .padding(top = 18.dp)
+                        .padding(top = 18.dp, bottom = 18.dp)
                         .height(140.dp),
                     verticalAlignment = Alignment.Bottom,
                 ) {
@@ -117,6 +120,39 @@ fun HomeScreen() {
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier.clip(RoundedCornerShape(20.dp))
                     )
+                }
+
+                var searchPhrase by remember {
+                    mutableStateOf("")
+                }
+
+                Box(
+                    modifier = Modifier
+                        .background(Color.LightGray, RoundedCornerShape(8.dp))
+                ) {
+                    TextField(
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = null,
+                                tint = Color(0xFF495E57)
+                            )
+                        },
+                        value = searchPhrase,
+                        onValueChange = {
+                            searchPhrase = it
+                        },
+                        label = { Text("Search") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.LightGray)
+                        ,
+
+                    )
+                }
+
+                if (searchPhrase.isNotEmpty()) {
+                    menuItems = menuItems.filter { it.title.contains(searchPhrase, ignoreCase = true) }
                 }
             }
             Text(
