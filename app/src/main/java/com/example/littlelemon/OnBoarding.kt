@@ -4,9 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
@@ -22,6 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import android.graphics.Color.parseColor
+import androidx.compose.material.*
+
 @Composable
 fun OnBoarding() {
     val context = LocalContext.current
@@ -57,7 +56,7 @@ fun OnBoarding() {
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color =  Color(red = 73, green = 94, blue = 87))
+                    .background(color = Color(red = 73, green = 94, blue = 87))
                     .padding(36.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -116,9 +115,21 @@ fun OnBoarding() {
                             showToast(context, "Registration unsuccessful. Please enter all data.")
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth().padding(all = 7.dp),
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            backgroundColor = Color(parseColor("#F4CE14"))
+                        )
                 ) {
-                    Text(text = "Click me")
+                    Text(
+                        text = "Register",
+                        modifier = Modifier
+                             .padding(all = 7.dp),
+                        color =Color(parseColor("#495E57")),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }
