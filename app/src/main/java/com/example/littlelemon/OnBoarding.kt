@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-
+import android.graphics.Color.parseColor
 @Composable
 fun OnBoarding() {
     val context = LocalContext.current
@@ -57,7 +57,7 @@ fun OnBoarding() {
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.Green)
+                    .background(color =  Color(red = 73, green = 94, blue = 87))
                     .padding(36.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -150,15 +150,7 @@ fun FormField(
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp, bottom = 12.dp, top = 12.dp)
     ) {
-        Text(
-            text = label,
-            textAlign = TextAlign.Left,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth(),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal
-        )
+
         TextField(
             value = value,
             onValueChange = {
@@ -166,6 +158,17 @@ fun FormField(
             },
             modifier = Modifier.fillMaxWidth(),
             isError = isError,
+            label = {
+                Text(
+                text = label,
+                textAlign = TextAlign.Left,
+                color = Color.Black,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                )
+            }
         )
 
         if (isError) {
