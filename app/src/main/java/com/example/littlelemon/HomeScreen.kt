@@ -12,12 +12,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HomeScreen() {
     val image = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_IMAGE, SharedPreferencesManager.image)
+    
     Column() {
         Text(text = "HomeScreen $image")
         if(image.isNotEmpty()) {
-            DisplayImage(
-                image,
-            )
+            DisplayImage(image)
         }
     }
 }
