@@ -88,26 +88,25 @@ fun ProfileScreen() {
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold
         )
-
-    Button(
-        onClick = {
-            if (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                pickImageLauncher.launch("image/*")
-            } else {
-                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        Button(
+            onClick = {
+                if (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    pickImageLauncher.launch("image/*")
+                } else {
+                    requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
             }
+        ) {
+            Text(
+                text = if(image.isNotEmpty()) {
+                    "Change"
+                } else {
+                    "Select Image from Gallery"
+                }
+            )
         }
-    ) {
-        Text(
-            text = if(image.isNotEmpty()) {
-                "Change"
-            } else {
-                "Select Image from Gallery"
-            }
-        )
-    }
 
         if (image.isNotEmpty()) {
             DisplayImage(image )
@@ -149,7 +148,7 @@ fun ProfileScreen() {
                     firstName = firstName.trim()
                     lastName = lastName.trim()
                     email = email.trim()
-println("firstname $firstName")
+
                     isFirstNameError = !validFirstAndLastName(firstName)
                     isLastNameError = !validFirstAndLastName(lastName)
                     isEmailError = !isValidEmail(email)
