@@ -194,9 +194,9 @@ fun ProfileScreen() {
                         SharedPreferencesManager.saveString(SharedPreferencesManager.PRF_KEY_FIRSTNAME, firstName)
                         SharedPreferencesManager.saveString(SharedPreferencesManager.PRF_KEY_LASTNAME, lastName)
                         SharedPreferencesManager.saveString(SharedPreferencesManager.PRF_KEY_EMAIL, email)
-                        showToast(context, "Registration successful!")
+                        showToast(context, "Saved Changes!")
                     } else {
-                        showToast(context, "Registration unsuccessful. Please enter all data.")
+                        showToast(context, "Failed to Save Changes. Please enter all data.")
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
