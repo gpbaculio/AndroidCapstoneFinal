@@ -4,11 +4,13 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextFieldColors
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.expandVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -82,11 +84,38 @@ fun HomeScreen() {
             isLoading = false
         }
     }
-
-
     Column() {
-        if(image.isNotEmpty()) {
-            DisplayImage(image)
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.littlelemonimgtxt_nobg),
+                    contentDescription = "Little Lemon Logo",
+                    modifier = Modifier
+                        .fillMaxWidth(.40f)
+                        .padding(16.dp),
+                )
+                Box(modifier = Modifier.fillMaxWidth().padding(end=16.dp), contentAlignment = Alignment.CenterEnd) {
+                    GlideImage(
+                        model = image,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .absoluteOffset(x = 0.dp, y = 0.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
+
+            }
+
         }
         if(isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -180,14 +209,17 @@ fun HomeScreen() {
             )
             LazyRow {
                 items(menuCategories) { category ->
-                    MenuCategory(category,
+                    MenuCategory(
+                        category,
                         onClick = {
                             selectedCategories = if (selectedCategories.contains(category)) {
                                 selectedCategories - category
                             } else {
                                 selectedCategories + category
                             }
-                        })
+                        },
+                        isSelected = selectedCategories.contains(category)
+                    )
                 }
             }
             Divider(
@@ -217,10 +249,25 @@ fun CircularProgressLoader() {
 }
 
 @Composable
-fun MenuCategory(category: String, onClick: () -> Unit) {
+fun MenuCategory(
+    category: String,
+    onClick: () -> Unit,
+    isSelected: Boolean
+) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = if(isSelected) {
+                Color(0xFF495E57)
+            } else {
+                Color.LightGray
+            },
+            contentColor = if(isSelected) {
+                Color.LightGray
+            } else {
+                Color(0xFF495E57)
+            }
+        ),
         shape = RoundedCornerShape(40),
         modifier = Modifier.padding(5.dp)
     ) {

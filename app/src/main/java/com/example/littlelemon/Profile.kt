@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -103,19 +104,22 @@ fun ProfileScreen() {
                 text = if(image.isNotEmpty()) {
                     "Change"
                 } else {
-                    "Select Image from Gallery"
+                    "Select Profile Image from Gallery"
                 }
             )
         }
 
         if (image.isNotEmpty()) {
-            DisplayImage(image )
+            DisplayImage(image)
         }
 
         if(image.isEmpty()){
-            Text(text = "No image selected", modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp))
+            Text(
+                text = "No image selected",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+            )
         }
 
         FormField(
@@ -162,9 +166,19 @@ fun ProfileScreen() {
                         showToast(context, "Registration unsuccessful. Please enter all data.")
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults
+                    .buttonColors(
+                        backgroundColor = Color(android.graphics.Color.parseColor("#F4CE14"))
+                    )
             ) {
-                Text(text = "Click me")
+                Text(
+                    text = "Save Changes",
+                    modifier = Modifier
+                    .padding(all = 7.dp),
+                    color = Color(android.graphics.Color.parseColor("#495E57")),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold)
             }
         }
     }
