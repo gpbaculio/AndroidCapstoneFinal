@@ -2,10 +2,13 @@ package com.example.littlelemon
 import androidx.compose.material.CircularProgressIndicator
 
 import android.graphics.drawable.Drawable
+import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.room.Room
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -30,6 +36,7 @@ import io.ktor.client.request.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreen() {
     val context = LocalContext.current
@@ -38,13 +45,9 @@ fun HomeScreen() {
     }
     var isLoading by remember { mutableStateOf(false) }
     val image = SharedPreferencesManager.getString(SharedPreferencesManager.PRF_KEY_IMAGE, SharedPreferencesManager.image)
-
-
     val databaseMenuItems by database.menuItemDao().getAll().observeAsState(emptyList())
-
     val menuItems = databaseMenuItems
-
-
+    val menuCategories = menuItems.map { it.category }.distinct()
     val dao = database.menuItemDao()
 
     LaunchedEffect(Unit) {
@@ -78,6 +81,63 @@ fun HomeScreen() {
                 }
             }
         } else {
+            Column(
+                modifier = Modifier
+                    .background(Color(0xFF495E57))
+                    .padding(start = 12.dp, end = 12.dp, top = 16.dp, bottom = 16.dp)
+            ) {
+                Text(
+                    text = "Little Lemon",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFF4CE14)
+                )
+                Text(
+                    text = "Chicago",
+                    fontSize = 24.sp,
+                    color = Color(0xFFEDEFEE)
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 18.dp)
+                        .height(140.dp),
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Text(
+                        text = "We are a family-owned Mediterranean restaurant, focused on traditional recipes served with a modern twist",
+                        color = Color(0xFFEDEFEE),
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .padding(bottom = 28.dp)
+                            .fillMaxWidth(0.6f),
+                    )
+                    GlideImage(
+                        model =  R.drawable.upperpanelimage,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.clip(RoundedCornerShape(20.dp))
+                    )
+                }
+            }
+            Text(
+                text = "ORDER FOR DELIVERY!",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Left,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+            LazyRow {
+                items(menuCategories) { category ->
+                    MenuCategory(category)
+                }
+            }
+            Divider(
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                color = Color.LightGray,
+                thickness = 1.dp
+            )
             LazyColumn {
                 items(menuItems) { Menu ->
                     MenuDish(Menu)
@@ -97,6 +157,20 @@ fun CircularProgressLoader() {
         strokeWidth = 4.dp,
         color = MaterialTheme.colors.primary
     )
+}
+
+@Composable
+fun MenuCategory(category: String) {
+    Button(
+        onClick = { /*TODO*/ },
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+        shape = RoundedCornerShape(40),
+        modifier = Modifier.padding(5.dp)
+    ) {
+        Text(
+            text = category
+        )
+    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -140,9 +214,15 @@ fun GlideLoader(image: String) {
     var isLoading by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier
-        .fillMaxSize()
-        .background(if(isLoading) {  Color.LightGray } else {  Color.White  })
-        .size(100.dp),
+            .fillMaxSize()
+            .background(
+                if (isLoading) {
+                    Color.LightGray
+                } else {
+                    Color.White
+                }
+            )
+            .size(100.dp),
         contentAlignment = Alignment.Center
     ) {
         if(isLoading) { CircularProgressLoader() }

@@ -67,7 +67,6 @@ fun LoggedInUser() {
                 composable(Profile.route) {
                     ProfileScreen()
                 }
-
             }
         }
     }
@@ -82,7 +81,7 @@ fun BottomNavigation(navController: NavController) {
         Profile
     )
     val selectedIndex = rememberSaveable {
-        mutableStateOf(1)
+        mutableStateOf(0)
     }
     BottomNavigation {
         destinationList.forEachIndexed { index, destination ->
