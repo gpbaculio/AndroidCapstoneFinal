@@ -121,7 +121,7 @@ fun HomeScreen(onProfileClick: () -> Unit) {
                             },
                         contentScale = ContentScale.Crop,
                     ) {
-                        it.error(R.drawable.image).centerInside().centerCrop().fitCenter()
+                        it.error(R.drawable.image).placeholder(R.drawable.image)
                     }
                 }
 
