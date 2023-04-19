@@ -34,14 +34,24 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreen() {
+    val httpClient = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json(contentType = ContentType("text", "plain"))
+        }
+    }
     val context = LocalContext.current
     val database by lazy {
         Room.databaseBuilder(context, AppDatabase::class.java, "database").build()
@@ -61,8 +71,7 @@ fun HomeScreen() {
         }
         if (isDaoEmpty) {
             isLoading = true
-            val menuItemsNetwork = HttpClient
-                .httpClient
+            val menuItemsNetwork =  httpClient
                 .get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")
                 .body<MenuNetwork>()
                 .menu
