@@ -45,16 +45,16 @@ fun HomeScreen() {
 
 
     Column() {
+
         if(image.isNotEmpty()) {
             DisplayImage(image)
         }
 
         if(isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-               Row {
-                   CircularProgressLoader()
-                   Text(text = "Loading...")
-               }
+                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressLoader()
+                }
             }
         } else {
             LazyColumn {
@@ -126,7 +126,7 @@ fun GlideLoader(image: String) {
         contentAlignment = Alignment.Center
     ) {
         if(isLoading) { CircularProgressLoader() }
-        
+
         GlideImage(
             model = image,
             contentDescription = null,
