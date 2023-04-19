@@ -6,11 +6,15 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 
 object SharedPreferencesManager {
+    private const val PREFERENCES_NAME = "AppPreferences"
+    fun init(context: Context) {
+        sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+    }
+
     var PRF_KEY_FIRSTNAME = "firstname"
     var PRF_KEY_LASTNAME = "lastname"
     var PRF_KEY_EMAIL = "email"
     var PRF_KEY_IMAGE = "image"
-    private const val PREFERENCES_NAME = "AppPreferences"
     private lateinit var sharedPreferences: SharedPreferences
     private val _firstName = mutableStateOf("")
     val firstName: String
@@ -26,9 +30,6 @@ object SharedPreferencesManager {
         get() = _image.value
 
     // Initialize SharedPreferences with the application context
-    fun init(context: Context) {
-        sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-    }
 
     // Function to store a string value in SharedPreferences
     fun saveString(key: String, value: String) {
@@ -63,6 +64,10 @@ object SharedPreferencesManager {
 
     // Function to clear all data from SharedPreferences
     fun clear() {
+        _firstName.value = ""
+        _lastName.value = ""
+        _email.value = ""
+        _image.value = ""
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()

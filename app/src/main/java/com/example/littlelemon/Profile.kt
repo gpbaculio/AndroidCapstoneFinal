@@ -3,6 +3,7 @@ package com.example.littlelemon
 
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -10,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.recreate
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
@@ -65,7 +68,37 @@ fun ProfileScreen() {
         }
     }
 
+    var isDialogOpen by remember { mutableStateOf(false) }
 
+    if (isDialogOpen) {
+        AlertDialog(
+            onDismissRequest = {
+                isDialogOpen = false  },
+            title = { Text(text = "Logout") },
+            text = { Text(text = "Are you sure you want to log out?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        SharedPreferencesManager.clear()
+                        showToast(context, "User Logged out")
+                        isDialogOpen = false
+                    }
+                ) {
+                    Text(text = "Yes")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        isDialogOpen = false
+                    }
+                ) {
+                    Text(text = "No")
+                }
+            },
+            modifier = Modifier.padding(16.dp)
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -177,6 +210,26 @@ fun ProfileScreen() {
                     modifier = Modifier
                     .padding(all = 7.dp),
                     color = Color(android.graphics.Color.parseColor("#495E57")),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold)
+            }
+            Spacer(modifier = Modifier.padding(12.dp))
+            Button(
+                onClick = {
+                    isDialogOpen = true
+
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults
+                    .buttonColors(
+                        backgroundColor = Color(android.graphics.Color.parseColor("#495E57"))
+                    )
+            ) {
+                Text(
+                    text = "Log out",
+                    modifier = Modifier
+                        .padding(all = 7.dp),
+                    color = Color(android.graphics.Color.parseColor("#F4CE14")),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold)
             }
