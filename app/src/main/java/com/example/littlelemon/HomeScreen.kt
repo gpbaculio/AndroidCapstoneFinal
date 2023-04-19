@@ -300,7 +300,7 @@ fun MenuDish(Menu: MenuItemRoom) {
                         .fillMaxWidth(.75f)
                 )
                 Text(
-                    text = "${Menu.price}", color = Color.Gray, fontWeight = FontWeight.Bold
+                    text = "$ ${Menu.price}", color = Color.Gray, fontWeight = FontWeight.Bold
                 )
             }
             GlideLoader(Menu.image)
