@@ -1,5 +1,6 @@
 package com.example.littlelemon
 
+import android.os.Build
 import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,12 +21,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.littlelemon.ui.theme.LittleLemonTheme
-
+import android.view.Window
+import android.view.WindowManager
+import android.graphics.Color.parseColor
+import android.graphics.Color.parseColor
 class MainActivity : ComponentActivity() {
+    private fun setStatusBarColor(color: Int) {
+        // Get the window object
+        val window: Window = window
 
+        // Set the status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = color
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setStatusBarColor(parseColor("#495E57"))
         SharedPreferencesManager.init(this)
         setContent {
             App()
